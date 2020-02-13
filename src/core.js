@@ -60,11 +60,15 @@ export default class Core extends CoreBase {
 
     super(defaultConfiguration, config, options);
 
+    const $contents = document.createElement('div');
+    $contents.className = 'osjs-contents';
+
     this.logger = logger;
     this.ws = null;
     this.ping = null;
     this.splash = new Splash(this);
     this.$root = options.root;
+    this.$contents = $contents;
     this.$resourceRoot = options.resourceRoot || document.querySelector('head');
     this.requestOptions = {};
     this.urlResolver = urlResolver(this.configuration);
@@ -102,6 +106,11 @@ export default class Core extends CoreBase {
       this.ws.close();
     }
 
+    if (this.$contents) {
+      this.$contents.remove();
+      this.$contents = undefined;
+    }
+
     this.user = null;
     this.ws = null;
     this.connecting = false;
@@ -132,6 +141,7 @@ export default class Core extends CoreBase {
 
     console.group('Core::boot()');
 
+    this.$root.appendChild(this.$contents);
     this._attachEvents();
     this.emit('osjs/core:boot');
 
